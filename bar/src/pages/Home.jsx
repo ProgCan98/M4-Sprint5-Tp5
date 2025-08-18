@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import heroImage from '../assets/hero.png';
+import heroImage from '../assets/hero1.jpg';
 
 function Home() {
   return (
@@ -7,7 +7,7 @@ function Home() {
       className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white hero-bg"
       style={{ backgroundImage: `url(${heroImage})` }}
     >
-      <div className="bg-black bg-opacity-50 p-8 rounded-md">
+      <div className="p-8 rounded-md">
         <h1 className="text-4xl md:text-6xl font-bold mb-4">Cocktail Bar</h1>
         <p className="text-lg md:text-xl mb-6">Elige tu bebida favorita</p>
         <input
