@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getDrinkById } from '../services/api';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../context/CartContext'; // Asegúrate de esta importación
 import { toast } from 'react-toastify';
 
 function DrinkDetail() {
@@ -15,7 +15,6 @@ function DrinkDetail() {
       try {
         const data = await getDrinkById(id);
         if (data) {
-          // Mock precio si no existe
           data.price = (Math.random() * 15 + 5).toFixed(2);
           setDrink(data);
         } else {
@@ -42,13 +41,20 @@ function DrinkDetail() {
   };
 
   if (loading) return <div className="text-center py-10">Cargando...</div>;
-  if (!drink) return <div className="text-center py-10">Bebida no encontrada</div>;
+  if (!drink)
+    return <div className="text-center py-10">Bebida no encontrada</div>;
 
   return (
     <div className="container mx-auto p-4">
-      <Link to="/menu" className="text-orange-500 hover:underline mb-4 block">&larr; Volver al Menú</Link>
+      <Link to="/menu" className="text-orange-500 hover:underline mb-4 block">
+        &larr; Volver al Menú
+      </Link>
       <div className="flex flex-col md:flex-row items-center bg-gray-800 p-6 rounded-lg shadow-lg">
-        <img src={drink.strDrinkThumb} alt={drink.strDrink} className="w-64 h-64 object-cover rounded-md mb-4 md:mb-0 md:mr-6" />
+        <img
+          src={drink.strDrinkThumb}
+          alt={drink.strDrink}
+          className="w-64 h-64 object-cover rounded-md mb-4 md:mb-0 md:mr-6"
+        />
         <div>
           <h1 className="text-3xl font-bold mb-2">{drink.strDrink}</h1>
           <p className="text-lg mb-2">Categoría: {drink.strCategory}</p>
@@ -58,7 +64,9 @@ function DrinkDetail() {
             {Object.keys(drink)
               .filter((key) => key.startsWith('strIngredient') && drink[key])
               .map((key) => (
-                <li key={key}>{drink[key]} - {drink[`strMeasure${key.slice(13)}`]}</li>
+                <li key={key}>
+                  {drink[key]} - {drink[`strMeasure${key.slice(13)}`]}
+                </li>
               ))}
           </ul>
           <h2 className="text-xl font-semibold mb-2">Instrucciones:</h2>

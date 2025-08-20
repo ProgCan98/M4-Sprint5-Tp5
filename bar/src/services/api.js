@@ -9,13 +9,20 @@ const api = axios.create({
 });
 
 // Obtener lista de bebidas por búsqueda (e.g., nombre o categoría)
-export const getDrinks = async (query = '') => {
+export const getDrinks = async (query = null) => {
   try {
-    const response = await api.get(`/search.php?s=${query}`);
-    return response.data.drinks || []; // Retorna array vacío si no hay resultados
+    const url = query
+      ? `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(
+          query
+        )}`
+      : `https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Alcoholic`; // Ejemplo para todas las bebidas alcohólicas
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    return data.drinks || [];
   } catch (error) {
     console.error('Error fetching drinks:', error);
-    throw error;
+    return [];
   }
 };
 

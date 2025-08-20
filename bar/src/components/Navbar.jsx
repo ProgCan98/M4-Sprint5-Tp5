@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { useCart } from '../context/CartContext'; // Nuevo import
+import { useCart } from '../context/CartContext'; // Asegúrate de esta importación
 
 function Navbar() {
   const { getCartCount } = useCart();
@@ -18,7 +18,9 @@ function Navbar() {
           <NavLink
             to="/"
             className={({ isActive }) =>
-              `hover:text-orange-500 ${isActive ? 'text-orange-500 font-semibold' : ''}`
+              `hover:text-orange-500 ${
+                isActive ? 'text-orange-500 font-semibold' : ''
+              }`
             }
           >
             Home
@@ -26,7 +28,9 @@ function Navbar() {
           <NavLink
             to="/menu"
             className={({ isActive }) =>
-              `hover:text-orange-500 ${isActive ? 'text-orange-500 font-semibold' : ''}`
+              `hover:text-orange-500 ${
+                isActive ? 'text-orange-500 font-semibold' : ''
+              }`
             }
           >
             Menú
@@ -34,7 +38,9 @@ function Navbar() {
           <NavLink
             to="/cart"
             className={({ isActive }) =>
-              `hover:text-orange-500 ${isActive ? 'text-orange-500 font-semibold' : ''}`
+              `hover:text-orange-500 ${
+                isActive ? 'text-orange-500 font-semibold' : ''
+              }`
             }
           >
             Carrito

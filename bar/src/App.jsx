@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { CartProvider } from './context/CartContext'; // Nuevo import
+import { CartProvider } from './context/CartProvider'; // Actualizado
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Menu from './pages/Menu';
@@ -11,11 +11,11 @@ import Checkout from './pages/Checkout';
 
 function App() {
   return (
-    <CartProvider> {/* Envuelve aquí */}
+    <CartProvider>
       <BrowserRouter>
         <div className="min-h-screen bg-gray-900 text-white">
           <Navbar />
-          <ToastContainer position="top-right" autoClose={3000} />
+          <ToastContainer position="bottom-right" autoClose={3000} />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/menu" element={<Menu />} />

@@ -1,22 +1,26 @@
-import { createContext, useContext, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-
-const CartContext = createContext();
+import CartContext from './CartContext';
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
+  // Cargar carrito desde localStorage al inicializar
+  const initialCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+  const [cartItems, setCartItems] = useState(initialCartItems);
+
+  // Guardar carrito en localStorage cada vez que cambie
+  useEffect(() => {
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   // Agregar bebida al carrito
   const addToCart = (drink) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === drink.id);
       if (existingItem) {
-        // Actualizar cantidad si ya existe
         return prevItems.map((item) =>
           item.id === drink.id ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
-      // Agregar nuevo con cantidad 1
       toast.success('Bebida agregada al carrito');
       return [...prevItems, { ...drink, quantity: 1 }];
     });
@@ -46,7 +50,9 @@ export const CartProvider = ({ children }) => {
 
   // Calcular total
   const getTotal = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+    return cartItems
+      .reduce((total, item) => total + item.price * item.quantity, 0)
+      .toFixed(2);
   };
 
   // Cantidad total de items para badge
@@ -56,11 +62,17 @@ export const CartProvider = ({ children }) => {
 
   return (
     <CartContext.Provider
-      value={{ cartItems, addToCart, updateQuantity, removeFromCart, clearCart, getTotal, getCartCount }}
+      value={{
+        cartItems,
+        addToCart,
+        updateQuantity,
+        removeFromCart,
+        clearCart,
+        getTotal,
+        getCartCount,
+      }}
     >
       {children}
     </CartContext.Provider>
   );
 };
-
-export const useCart = () => useContext(CartContext);

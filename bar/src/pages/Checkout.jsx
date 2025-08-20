@@ -1,4 +1,4 @@
-import { useCart } from '../context/CartContext';
+import { useCart } from '../context/CartContext'; // Asegúrate de esta importación
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 
@@ -11,7 +11,9 @@ function Checkout() {
     const waiter = e.target.waiter.value;
     const time = e.target.time.value;
 
-    toast.success(`Pedido enviado a mesa ${table} con ${waiter} en ${time} min`);
+    toast.success(
+      `Pedido enviado a mesa ${table} con ${waiter} en ${time} min`
+    );
     clearCart();
   };
 
@@ -20,7 +22,9 @@ function Checkout() {
       <div className="container mx-auto p-4 text-center">
         <h1 className="text-2xl font-bold mb-4">Checkout</h1>
         <p className="mb-4">Tu carrito está vacío.</p>
-        <Link to="/menu" className="text-orange-500 hover:underline">Volver al Menú</Link>
+        <Link to="/menu" className="text-orange-500 hover:underline">
+          Volver al Menú
+        </Link>
       </div>
     );
   }
@@ -32,7 +36,9 @@ function Checkout() {
         <h2 className="text-xl font-semibold mb-2">Resumen del Carrito</h2>
         {cartItems.map((item) => (
           <div key={item.id} className="flex justify-between mb-2">
-            <span>{item.name} (x{item.quantity})</span>
+            <span>
+              {item.name} (x{item.quantity})
+            </span>
             <span>${(item.price * item.quantity).toFixed(2)}</span>
           </div>
         ))}
@@ -40,9 +46,14 @@ function Checkout() {
           <p className="text-lg font-bold">Total: ${getTotal()}</p>
         </div>
       </div>
-      <form onSubmit={handleSubmit} className="bg-gray-800 p-6 rounded-lg shadow-lg">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-gray-800 p-6 rounded-lg shadow-lg"
+      >
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Número de Mesa</label>
+          <label className="block text-sm font-medium mb-1">
+            Número de Mesa
+          </label>
           <input
             type="number"
             name="table"
@@ -64,7 +75,9 @@ function Checkout() {
           </select>
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Tiempo Aproximado</label>
+          <label className="block text-sm font-medium mb-1">
+            Tiempo Aproximado
+          </label>
           <select
             name="time"
             required
