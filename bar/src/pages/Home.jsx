@@ -22,9 +22,23 @@ function Home() {
       className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white hero-bg"
       style={{ backgroundImage: `url(${heroImage})` }}
     >
-      <div className="bg-black bg-opacity-50 p-8 rounded-md">
-        <h1 className="text-4xl md:text-6xl font-bold mb-4">Cocktail Bar</h1>
-        <p className="text-lg md:text-xl mb-6">Elige tu bebida favorita</p>
+      <div className="p-8 rounded-md">
+        <h1
+          className="text-4xl md:text-6xl font-bold mb-4"
+          style={{
+            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7), -2px -2px 4px rgba(255, 255, 255, 0.3)',
+          }}
+        >
+          Cocktail Bar
+        </h1>
+        <p
+          className="text-lg md:text-xl mb-6 font-bold"
+          style={{
+            textShadow: '1px 1px 3px rgba(0, 0, 0, 0.7), -1px -1px 3px rgba(255, 255, 255, 0.3)',
+          }}
+        >
+          Elige tu bebida favorita
+        </p>
         <form onSubmit={handleSearch} className="w-full max-w-md">
           <div className="flex">
             <input

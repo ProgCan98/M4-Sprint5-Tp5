@@ -1,9 +1,15 @@
 import { NavLink } from 'react-router-dom';
-import { useCart } from '../context/CartContext'; // Asegúrate de esta importación
+import { useState } from 'react';
+import { useCart } from '../context/CartContext';
 
 function Navbar() {
   const { getCartCount } = useCart();
   const cartItemsCount = getCartCount();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   return (
     <nav className="bg-gray-900 text-white p-4 shadow-md">
@@ -18,9 +24,7 @@ function Navbar() {
           <NavLink
             to="/"
             className={({ isActive }) =>
-              `hover:text-orange-500 ${
-                isActive ? 'text-orange-500 font-semibold' : ''
-              }`
+              `hover:text-orange-500 ${isActive ? 'text-orange-500 font-semibold' : ''}`
             }
           >
             Home
@@ -28,9 +32,7 @@ function Navbar() {
           <NavLink
             to="/menu"
             className={({ isActive }) =>
-              `hover:text-orange-500 ${
-                isActive ? 'text-orange-500 font-semibold' : ''
-              }`
+              `hover:text-orange-500 ${isActive ? 'text-orange-500 font-semibold' : ''}`
             }
           >
             Menú
@@ -38,9 +40,7 @@ function Navbar() {
           <NavLink
             to="/cart"
             className={({ isActive }) =>
-              `hover:text-orange-500 ${
-                isActive ? 'text-orange-500 font-semibold' : ''
-              }`
+              `hover:text-orange-500 ${isActive ? 'text-orange-500 font-semibold' : ''}`
             }
           >
             Carrito
@@ -54,7 +54,7 @@ function Navbar() {
 
         {/* Menú Hamburguesa (Móvil) */}
         <div className="md:hidden">
-          <button className="focus:outline-none">
+          <button onClick={toggleMenu} className="focus:outline-none">
             <svg
               className="w-6 h-6"
               fill="none"
@@ -70,6 +70,42 @@ function Navbar() {
               />
             </svg>
           </button>
+          {isMenuOpen && (
+            <div className="absolute top-16 right-4 bg-gray-800 p-4 rounded-md shadow-lg z-10">
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  `block py-2 hover:text-orange-500 ${isActive ? 'text-orange-500 font-semibold' : ''}`
+                }
+                onClick={toggleMenu}
+              >
+                Home
+              </NavLink>
+              <NavLink
+                to="/menu"
+                className={({ isActive }) =>
+                  `block py-2 hover:text-orange-500 ${isActive ? 'text-orange-500 font-semibold' : ''}`
+                }
+                onClick={toggleMenu}
+              >
+                Menú
+              </NavLink>
+              <NavLink
+                to="/cart"
+                className={({ isActive }) =>
+                  `block py-2 hover:text-orange-500 ${isActive ? 'text-orange-500 font-semibold' : ''}`
+                }
+                onClick={toggleMenu}
+              >
+                Carrito
+                {cartItemsCount > 0 && (
+                  <span className="ml-2 bg-orange-500 text-white text-xs rounded-full px-2 py-1">
+                    {cartItemsCount}
+                  </span>
+                )}
+              </NavLink>
+            </div>
+          )}
         </div>
       </div>
     </nav>

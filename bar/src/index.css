@@ -8,7 +8,7 @@ body {
 
 /* Clase para fondo de hero (opcional, si usas imagen) */
 .hero-bg {
-  background-image: url('./assets/hero.jpg');
+  background-image: url('./assets/hero1.jpg');
   background-size: cover;
   background-position: center;
 }
