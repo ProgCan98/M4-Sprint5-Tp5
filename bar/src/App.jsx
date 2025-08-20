@@ -1,30 +1,14 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { CartProvider } from './context/CartProvider'; // Actualizado
+import { Outlet } from 'react-router-dom';
+import { CartProvider } from './context/CartProvider';
 import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Menu from './pages/Menu';
-import DrinkDetail from './pages/DrinkDetail';
-import Cart from './pages/Cart';
-import Checkout from './pages/Checkout';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
     <CartProvider>
-      <BrowserRouter>
-        <div className="min-h-screen bg-gray-900 text-white">
-          <Navbar />
-          <ToastContainer position="bottom-right" autoClose={3000} />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/menu" element={<Menu />} />
-            <Route path="/drink/:id" element={<DrinkDetail />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-          </Routes>
-        </div>
-      </BrowserRouter>
+      <Navbar />
+      <ToastContainer position="bottom-right" autoClose={3000} />
+      <Outlet />
     </CartProvider>
   );
 }
