@@ -1,17 +1,34 @@
-import { useCart } from '../context/CartContext'; // Asegúrate de esta importación
+import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
+import { updateOrder, deleteOrder } from '../services/apiBackend'; // Nuevo import
 
 function Cart() {
-  const { cartItems, updateQuantity, removeFromCart, clearCart, getTotal } =
-    useCart();
+  const { cartItems, updateQuantity, removeFromCart, clearCart, getTotal } = useCart();
+
+  const handleUpdateQuantity = async (id, newQuantity) => {
+    try {
+      // Actualiza en MockAPI (asume que el item tiene un 'orderId' único; ajusta según tu schema)
+      await updateOrder(id, { quantity: newQuantity });
+      updateQuantity(id, newQuantity); // Actualiza local
+    } catch (error) {
+      toast.error('Error al actualizar cantidad');
+    }
+  };
+
+  const handleRemoveFromCart = async (id) => {
+    try {
+      await deleteOrder(id); // Elimina en MockAPI
+      removeFromCart(id); // Elimina local
+    } catch (error) {
+      toast.error('Error al eliminar item');
+    }
+  };
 
   if (cartItems.length === 0) {
     return (
       <div className="container mx-auto p-4 text-center">
         <h1 className="text-2xl font-bold mb-4">Carrito Vacío</h1>
-        <Link to="/menu" className="text-orange-500 hover:underline">
-          Volver al Menú
-        </Link>
+        <Link to="/menu" className="text-orange-500 hover:underline">Volver al Menú</Link>
       </div>
     );
   }
@@ -33,11 +50,7 @@ function Cart() {
           {cartItems.map((item) => (
             <tr key={item.id} className="border-b border-gray-700">
               <td className="p-2 flex items-center">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-12 h-12 mr-2 rounded"
-                />
+                <img src={item.image} alt={item.name} className="w-12 h-12 mr-2 rounded" />
                 {item.name}
               </td>
               <td className="p-2">${item.price.toFixed(2)}</td>
@@ -46,18 +59,14 @@ function Cart() {
                   type="number"
                   min="1"
                   value={item.quantity}
-                  onChange={(e) =>
-                    updateQuantity(item.id, parseInt(e.target.value))
-                  }
+                  onChange={(e) => handleUpdateQuantity(item.id, parseInt(e.target.value))}
                   className="w-16 p-1 bg-gray-800 text-white border border-gray-600 rounded"
                 />
               </td>
-              <td className="p-2">
-                ${(item.price * item.quantity).toFixed(2)}
-              </td>
+              <td className="p-2">${(item.price * item.quantity).toFixed(2)}</td>
               <td className="p-2">
                 <button
-                  onClick={() => removeFromCart(item.id)}
+                  onClick={() => handleRemoveFromCart(item.id)}
                   className="text-red-500 hover:underline"
                 >
                   Eliminar
