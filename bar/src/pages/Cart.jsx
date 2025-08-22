@@ -1,11 +1,16 @@
-// src/pages/Cart.jsx
-import { useCart } from '../context/CartContext';
-import { Link } from 'react-router-dom';
+// Página para mostrar y gestionar el carrito de compras
+// Permite actualizar cantidades, eliminar ítems y proceder al checkout
+// Usa SweetAlert2 para confirmar acción de vaciar carrito
+
+import { useCart } from '../context/CartContext'; // Funciones del carrito
+import { Link } from 'react-router-dom'; // Navegación
+import Swal from 'sweetalert2'; // Importa SweetAlert2 para confirmaciones
 
 function Cart() {
   const { cartItems, updateQuantity, removeFromCart, clearCart, getTotal } =
-    useCart();
+    useCart(); // Acceso a funciones y estado del carrito
 
+  // Actualiza cantidad de un ítem o lo elimina si es 0
   const handleUpdateQuantity = (id, newQuantity) => {
     if (newQuantity > 0) {
       updateQuantity(id, newQuantity);
@@ -14,10 +19,35 @@ function Cart() {
     }
   };
 
+  // Elimina un ítem del carrito
   const handleRemoveFromCart = (id) => {
     removeFromCart(id);
   };
 
+  // Maneja confirmación para vaciar el carrito con SweetAlert2
+  const handleClearCart = async () => {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Se vaciará todo el carrito. Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, vaciar',
+      cancelButtonText: 'Cancelar',
+    });
+
+    if (result.isConfirmed) {
+      await clearCart(); // Ejecuta clearCart si el usuario confirma
+      Swal.fire(
+        'Carrito vaciado',
+        'El carrito se ha vaciado correctamente.',
+        'success'
+      );
+    }
+  };
+
+  // Muestra mensaje si el carrito está vacío
   if (cartItems.length === 0) {
     return (
       <div className="container mx-auto p-4 text-center">
@@ -32,6 +62,7 @@ function Cart() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Tu Carrito</h1>
+      {/* Tabla para mostrar ítems del carrito */}
       <table className="w-full border-collapse mb-4">
         <thead>
           <tr className="bg-gray-800">
@@ -82,7 +113,7 @@ function Cart() {
       </table>
       <div className="flex justify-between items-center mb-4">
         <button
-          onClick={clearCart}
+          onClick={handleClearCart}
           className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
         >
           Vaciar Carrito

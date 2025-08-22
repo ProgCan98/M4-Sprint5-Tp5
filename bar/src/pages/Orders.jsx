@@ -1,13 +1,18 @@
-// src/pages/Orders.jsx
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { getOrders, updateOrder, deleteOrder } from '../services/apiBackend';
-import { toast } from 'react-toastify';
+// Página para listar y gestionar órdenes existentes
+// Permite actualizar mozo/tiempo y eliminar órdenes
+// Usa SweetAlert2 para confirmar eliminación de pedidos
+
+import { useState, useEffect } from 'react'; // Hooks para estado y efectos
+import { Link } from 'react-router-dom'; // Navegación
+import { getOrders, updateOrder, deleteOrder } from '../services/apiBackend'; // APIs de órdenes
+import { toast } from 'react-toastify'; // Notificaciones
+import Swal from 'sweetalert2'; // Confirmaciones interactivas
 
 function Orders() {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [orders, setOrders] = useState([]); // Lista de órdenes
+  const [loading, setLoading] = useState(true); // Estado de carga
 
+  // Carga órdenes al montar el componente
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -23,6 +28,7 @@ function Orders() {
     fetchOrders();
   }, []);
 
+  // Actualiza una orden (mozo o tiempo)
   const handleUpdateOrder = async (id, updatedData) => {
     try {
       const response = await updateOrder(id, updatedData);
@@ -34,18 +40,38 @@ function Orders() {
     }
   };
 
+  // Maneja confirmación para eliminar una orden con SweetAlert2
   const handleDeleteOrder = async (id) => {
-    try {
-      await deleteOrder(id);
-      setOrders(orders.filter((order) => order.id !== id));
-      toast.success(`Pedido #${id} eliminado`);
-    } catch (error) {
-      console.error('Error deleting order:', error);
-      toast.error('Error al eliminar el pedido');
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: `Se eliminará el pedido #${id}. Esta acción no se puede deshacer.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteOrder(id);
+        setOrders(orders.filter((order) => order.id !== id));
+        Swal.fire(
+          'Eliminado',
+          `El pedido #${id} ha sido eliminado.`,
+          'success'
+        );
+      } catch (error) {
+        console.error('Error deleting order:', error);
+        Swal.fire('Error', 'No se pudo eliminar el pedido.', 'error');
+      }
     }
   };
 
+  // Muestra estado de carga
   if (loading) return <div className="text-center py-10">Cargando...</div>;
+  // Muestra mensaje si no hay órdenes
   if (orders.length === 0) {
     return (
       <div className="container mx-auto p-4 text-center">
@@ -79,6 +105,7 @@ function Orders() {
             ))}
           </ul>
           <div className="mt-4">
+            {/* Select para actualizar mozo */}
             <select
               defaultValue={order.waiter}
               onChange={(e) =>
@@ -93,6 +120,7 @@ function Orders() {
               <option value="María">María</option>
               <option value="Pedro">Pedro</option>
             </select>
+            {/* Select para actualizar tiempo */}
             <select
               defaultValue={order.time}
               onChange={(e) =>
