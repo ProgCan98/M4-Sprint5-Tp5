@@ -1,3 +1,4 @@
+// src/pages/Home.jsx
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import heroImage from '../assets/hero1.jpg';
@@ -14,27 +15,30 @@ function Home() {
       navigate(`/menu?search=${encodeURIComponent(term)}`);
     } else {
       console.log('Búsqueda vacía, no se redirige');
+      navigate('/menu'); // Si está vacío, va a todas las bebidas
     }
   };
 
   return (
     <div
-      className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white hero-bg"
+      className="flex flex-col items-center justify-center min-h-screen  text-white hero-bg"
       style={{ backgroundImage: `url(${heroImage})` }}
     >
       <div className="p-8 rounded-md">
         <h1
-          className="text-4xl md:text-6xl font-bold mb-4"
+          className="text-orange-500 text-4xl md:text-6xl font-extrabold mb-4"
           style={{
-            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7), -2px -2px 4px rgba(255, 255, 255, 0.3)',
+            textShadow:
+              '2px 2px 4px rgba(0, 0, 0, 0.7), -2px -2px 4px rgba(255, 255, 255, 0.3)',
           }}
         >
           Cocktail Bar
         </h1>
         <p
-          className="text-lg md:text-xl mb-6 font-bold"
+          className="text-lg md:text-xl mb-6 font-extrabold"
           style={{
-            textShadow: '1px 1px 3px rgba(0, 0, 0, 0.7), -1px -1px 3px rgba(255, 255, 255, 0.3)',
+            textShadow:
+              '1px 1px 3px rgba(0, 0, 0, 0.7), -1px -1px 3px rgba(255, 255, 255, 0.3)',
           }}
         >
           Elige tu bebida favorita
@@ -58,7 +62,8 @@ function Home() {
         </form>
         <Link
           to="/menu"
-          className="px-6 py-3 bg-orange-500 text-white rounded-md hover:bg-opacity-80 transition"
+          className="px-6 py-3 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition"
+          onClick={() => setSearchTerm('')} // Limpia el searchTerm al hacer clic
         >
           Explorar Menú
         </Link>

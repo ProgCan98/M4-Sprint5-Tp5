@@ -1,61 +1,118 @@
+// src/context/CartProvider.jsx
 import { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
 import CartContext from './CartContext';
+import { getOrders, updateOrder, deleteOrder } from '../services/apiBackend';
+import { toast } from 'react-toastify';
 
-export const CartProvider = ({ children }) => {
-  // Cargar carrito desde localStorage al inicializar
-  const initialCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-  const [cartItems, setCartItems] = useState(initialCartItems);
+export function CartProvider({ children }) {
+  const savedCartItems = localStorage.getItem('cartItems');
+  const savedOrderId = localStorage.getItem('orderId');
+  const [cartItems, setCartItems] = useState(
+    savedCartItems ? JSON.parse(savedCartItems) : []
+  );
+  const [orderId, setOrderId] = useState(savedOrderId || null);
+  const [isClearing, setIsClearing] = useState(false); // Nuevo estado para forzar actualización
 
-  // Guardar carrito en localStorage cada vez que cambie
   useEffect(() => {
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
-  }, [cartItems]);
+    if (orderId && !isClearing) {
+      // Evita recargar durante clear
+      getOrders()
+        .then((orders) => {
+          const currentOrder = orders.find((order) => order.id === orderId);
+          if (currentOrder) {
+            setCartItems(currentOrder.items || []);
+          } else {
+            setCartItems([]);
+            setOrderId(null);
+            localStorage.removeItem('orderId');
+          }
+        })
+        .catch((error) => {
+          console.error('Error loading orders:', error);
+          toast.error('Error al cargar los pedidos');
+        });
+    }
+  }, [cartItems, orderId, isClearing]);
 
-  // Agregar bebida al carrito
-  const addToCart = (drink) => {
+  const addToCart = (item) => {
     setCartItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item.id === drink.id);
-      if (existingItem) {
-        return prevItems.map((item) =>
-          item.id === drink.id ? { ...item, quantity: item.quantity + 1 } : item
+      const existingItem = prevItems.find((i) => i.id === item.id);
+      const newItems = existingItem
+        ? prevItems.map((i) =>
+            i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+          )
+        : [...prevItems, { ...item, quantity: 1 }];
+      if (orderId) {
+        updateOrder(orderId, { items: newItems }).catch((error) =>
+          console.error('Error syncing addToCart:', error)
         );
       }
-      toast.success('Bebida agregada al carrito');
-      return [...prevItems, { ...drink, quantity: 1 }];
+      return newItems;
     });
   };
 
-  // Actualizar cantidad
   const updateQuantity = (id, newQuantity) => {
-    if (newQuantity < 1) return removeFromCart(id);
     setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
+      prevItems
+        .map((item) =>
+          item.id === id ? { ...item, quantity: newQuantity } : item
+        )
+        .filter((item) => item.quantity > 0)
+    );
+    if (orderId) {
+      updateOrder(orderId, { items: cartItems }).catch((error) =>
+        console.error('Error syncing updateQuantity:', error)
+      );
+    }
+  };
+
+  const removeFromCart = (id) => {
+    const itemToRemove = cartItems.find((item) => item.id === id);
+    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    if (orderId && itemToRemove) {
+      updateOrder(orderId, { items: cartItems }).catch((error) =>
+        console.error('Error syncing removeFromCart:', error)
+      );
+    }
+  };
+
+  const clearCart = () => {
+    return new Promise((resolve) => {
+      console.log('Clearing cart, current items:', cartItems); // Depuración
+      setIsClearing(true); // Evita recarga de useEffect
+      setCartItems([]); // Vacía localmente primero
+      console.log('After local clear, cartItems:', cartItems); // Depuración
+      if (orderId) {
+        deleteOrder(orderId)
+          .then(() => {
+            console.log('Order deleted, resetting orderId:', orderId); // Depuración
+            setOrderId(null);
+            localStorage.removeItem('orderId');
+            resolve();
+          })
+          .catch((error) => {
+            console.error('Error clearing order:', error);
+            toast.error('Error al vaciar el carrito, pero se vació localmente');
+            setOrderId(null); // Fuerza reset aunque falle
+            localStorage.removeItem('orderId');
+            resolve();
+          });
+      } else {
+        localStorage.removeItem('orderId');
+        resolve();
+      }
+      setIsClearing(false); // Restaura después de resolver
+    });
+  };
+
+  const getTotal = () => {
+    return cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
     );
   };
 
-  // Eliminar item
-  const removeFromCart = (id) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-    toast.info('Bebida eliminada del carrito');
-  };
-
-  // Vaciar carrito
-  const clearCart = () => {
-    setCartItems([]);
-    toast.info('Carrito vaciado');
-  };
-
-  // Calcular total
-  const getTotal = () => {
-    return cartItems
-      .reduce((total, item) => total + item.price * item.quantity, 0)
-      .toFixed(2);
-  };
-
-  // Cantidad total de items para badge
   const getCartCount = () => {
     return cartItems.reduce((count, item) => count + item.quantity, 0);
   };
@@ -70,9 +127,10 @@ export const CartProvider = ({ children }) => {
         clearCart,
         getTotal,
         getCartCount,
+        setOrderId,
       }}
     >
       {children}
     </CartContext.Provider>
   );
-};
+}

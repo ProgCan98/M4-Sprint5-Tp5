@@ -1,6 +1,7 @@
+// src/pages/Menu.jsx
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
-import { getDrinks, getCategories } from '../services/api';
+import { getDrinks, getCategories } from '../services/apiBackend';
 import { useCart } from '../context/CartContext';
 import { toast } from 'react-toastify';
 
@@ -16,7 +17,6 @@ function Menu() {
   const searchTerm = searchParams.get('search') || '';
   const navigate = useNavigate();
 
-  // Cargar categorías al montar el componente
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -30,7 +30,6 @@ function Menu() {
     fetchCategories();
   }, []);
 
-  // Cargar bebidas según categoría o búsqueda
   useEffect(() => {
     const fetchDrinks = async () => {
       try {
@@ -86,7 +85,7 @@ function Menu() {
     const category = e.target.value;
     setSelectedCategory(category);
     if (category) {
-      setSearchParams({}); // Limpia el searchTerm de la URL al seleccionar categoría
+      setSearchParams({}); // Limpia el searchTerm al seleccionar categoría
     }
   };
 
