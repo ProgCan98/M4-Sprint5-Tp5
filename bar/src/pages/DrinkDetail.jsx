@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getDrinkById } from '../services/api';
-import { useCart } from '../context/CartContext'; // Asegúrate de esta importación
+import { getDrinkById } from '../services/apiBackend'; // Updated import
+import { useCart } from '../context/CartContext';
 import { toast } from 'react-toastify';
 
 function DrinkDetail() {
