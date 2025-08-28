@@ -104,7 +104,7 @@ El proyecto es ideal para estudiar conceptos clave de React como **Hooks**, **Co
 - **Fusión**: Se unificaron en `apiBackend.js` usando **Axios** para consistencia, aprovechando su sintaxis clara y soporte para timeouts (5 segundos).
 - Funciones en `apiBackend.js`:
   - `getDrinks`: Lista bebidas por categoría.
-  - `getCategories`: Obtiene categorías disponibles.
+  - `getCategories`: Obtiene categorías disponibles (corregido para manejar correctamente `response.data.drinks`).
   - `getDrinkById`: Detalles de una bebida por ID.
   - `createOrder`, `getOrders`, `updateOrder`, `deleteOrder`: Gestionan órdenes en MockAPI.
 - Todas las funciones manejan errores con `try/catch` y muestran notificaciones con Toastify.
@@ -119,11 +119,12 @@ El proyecto es ideal para estudiar conceptos clave de React como **Hooks**, **Co
 
 ### 7. Pruebas y Depuración
 
-- Se agregaron `console.log` en `createOrder` y otros puntos para depuración.
+- Se agregaron `console.log` en `createOrder`, `getCategories`, y `Menu.jsx` para depuración.
 - Estados de carga (`loading`) en páginas para mejorar UX.
 - Persistencia en `LocalStorage` asegura que el carrito no se pierda al recargar.
 - Sincronización con MockAPI asegura consistencia de órdenes.
 - SweetAlert2 agrega confirmaciones interactivas para acciones críticas.
+- **Corrección de Categorías**: Se corrigió `getCategories` en `apiBackend.js` para devolver `response.data.drinks`, solucionando el problema de categorías vacías en `Menu.jsx`.
 
 ## Estructura de Archivos
 
@@ -148,6 +149,10 @@ El proyecto es ideal para estudiar conceptos clave de React como **Hooks**, **Co
   - **SweetAlert2**: Diálogos interactivos para confirmaciones de usuario.
   - **Persistencia**: Uso de `LocalStorage` y sincronización con API.
   - **Tailwind CSS**: Estilos responsivos y utilitarios.
+- **Depuración de Categorías**:
+  - Problema: `getCategories` retornaba un array vacío debido a una lógica incorrecta en la verificación de `response.data.drinks`.
+  - Solución: Actualizado para usar `response.data.drinks || []`, asegurando que las categorías se carguen en `Menu.jsx`.
+  - Consejo: Verifica siempre el formato de la respuesta de la API (usando `console.log` o herramientas de red) antes de procesarla.
 - **Mejoras Posibles**:
   - Autenticación de usuarios.
   - Integración de pagos reales.
@@ -156,4 +161,5 @@ El proyecto es ideal para estudiar conceptos clave de React como **Hooks**, **Co
 - **Problemas Comunes**:
   - Manejo de estados asíncronos (loading, errors).
   - Sincronización entre `LocalStorage` y API.
+  - Respuesta incorrecta de APIs externas (como categorías vacías).
   - Responsividad en dispositivos móviles.

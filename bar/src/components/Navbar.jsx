@@ -1,8 +1,12 @@
+// Componente de barra de navegación responsiva
+// Muestra enlaces a las páginas principales y contador de ítems en el carrito
+// Usa Link de react-router-dom para navegación
 import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
 
 function Navbar() {
+  // Obtiene ítems del carrito para mostrar contador
   const { getCartCount } = useCart();
   const cartItemsCount = getCartCount();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,7 +28,9 @@ function Navbar() {
           <NavLink
             to="/"
             className={({ isActive }) =>
-              `hover:text-orange-500 ${isActive ? 'text-orange-500 font-semibold' : ''}`
+              `hover:text-orange-500 ${
+                isActive ? 'text-orange-500 font-semibold' : ''
+              }`
             }
           >
             Home
@@ -32,7 +38,9 @@ function Navbar() {
           <NavLink
             to="/menu"
             className={({ isActive }) =>
-              `hover:text-orange-500 ${isActive ? 'text-orange-500 font-semibold' : ''}`
+              `hover:text-orange-500 ${
+                isActive ? 'text-orange-500 font-semibold' : ''
+              }`
             }
           >
             Menú
@@ -40,7 +48,9 @@ function Navbar() {
           <NavLink
             to="/cart"
             className={({ isActive }) =>
-              `hover:text-orange-500 ${isActive ? 'text-orange-500 font-semibold' : ''}`
+              `hover:text-orange-500 ${
+                isActive ? 'text-orange-500 font-semibold' : ''
+              }`
             }
           >
             Carrito
@@ -75,7 +85,9 @@ function Navbar() {
               <NavLink
                 to="/"
                 className={({ isActive }) =>
-                  `block py-2 hover:text-orange-500 ${isActive ? 'text-orange-500 font-semibold' : ''}`
+                  `block py-2 hover:text-orange-500 ${
+                    isActive ? 'text-orange-500 font-semibold' : ''
+                  }`
                 }
                 onClick={toggleMenu}
               >
@@ -84,7 +96,9 @@ function Navbar() {
               <NavLink
                 to="/menu"
                 className={({ isActive }) =>
-                  `block py-2 hover:text-orange-500 ${isActive ? 'text-orange-500 font-semibold' : ''}`
+                  `block py-2 hover:text-orange-500 ${
+                    isActive ? 'text-orange-500 font-semibold' : ''
+                  }`
                 }
                 onClick={toggleMenu}
               >
@@ -93,7 +107,9 @@ function Navbar() {
               <NavLink
                 to="/cart"
                 className={({ isActive }) =>
-                  `block py-2 hover:text-orange-500 ${isActive ? 'text-orange-500 font-semibold' : ''}`
+                  `block py-2 hover:text-orange-500 ${
+                    isActive ? 'text-orange-500 font-semibold' : ''
+                  }`
                 }
                 onClick={toggleMenu}
               >

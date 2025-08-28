@@ -1,18 +1,23 @@
-// src/context/CartProvider.jsx
+// Proveedor del contexto del carrito
+// Gestiona el estado del carrito y persiste datos en LocalStorage
+// Proporciona funciones para manipular el carrito
 import { useState, useEffect } from 'react';
 import CartContext from './CartContext';
 import { getOrders, updateOrder, deleteOrder } from '../services/apiBackend';
 import { toast } from 'react-toastify';
 
 export function CartProvider({ children }) {
+  // Carga ítems desde LocalStorage al inicializar
   const savedCartItems = localStorage.getItem('cartItems');
   const savedOrderId = localStorage.getItem('orderId');
+  // Estado para los ítems del carrito
   const [cartItems, setCartItems] = useState(
     savedCartItems ? JSON.parse(savedCartItems) : []
   );
   const [orderId, setOrderId] = useState(savedOrderId || null);
   const [isClearing, setIsClearing] = useState(false); // Nuevo estado para forzar actualización
 
+  // Persiste el carrito en LocalStorage al cambiar
   useEffect(() => {
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
     if (orderId && !isClearing) {
@@ -35,14 +40,17 @@ export function CartProvider({ children }) {
     }
   }, [cartItems, orderId, isClearing]);
 
+  // Agrega un ítem al carrito
   const addToCart = (item) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((i) => i.id === item.id);
+      // Incrementa cantidad si el ítem ya existe
       const newItems = existingItem
         ? prevItems.map((i) =>
             i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
           )
-        : [...prevItems, { ...item, quantity: 1 }];
+        : // Agrega nuevo ítem con cantidad 1
+          [...prevItems, { ...item, quantity: 1 }];
       if (orderId) {
         updateOrder(orderId, { items: newItems }).catch((error) =>
           console.error('Error syncing addToCart:', error)
@@ -52,6 +60,7 @@ export function CartProvider({ children }) {
     });
   };
 
+  // Actualiza la cantidad de un ítem
   const updateQuantity = (id, newQuantity) => {
     setCartItems((prevItems) =>
       prevItems
@@ -67,6 +76,7 @@ export function CartProvider({ children }) {
     }
   };
 
+  // Elimina un ítem del carrito
   const removeFromCart = (id) => {
     const itemToRemove = cartItems.find((item) => item.id === id);
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
@@ -77,6 +87,7 @@ export function CartProvider({ children }) {
     }
   };
 
+  // Vacía el carrito
   const clearCart = () => {
     return new Promise((resolve) => {
       console.log('Clearing cart, current items:', cartItems); // Depuración
@@ -106,6 +117,7 @@ export function CartProvider({ children }) {
     });
   };
 
+  // Calcula el total del carrito
   const getTotal = () => {
     return cartItems.reduce(
       (total, item) => total + item.price * item.quantity,
@@ -117,6 +129,7 @@ export function CartProvider({ children }) {
     return cartItems.reduce((count, item) => count + item.quantity, 0);
   };
 
+  // Valor del contexto
   return (
     <CartContext.Provider
       value={{

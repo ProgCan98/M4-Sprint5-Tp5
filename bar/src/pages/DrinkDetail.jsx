@@ -1,3 +1,6 @@
+// Página para mostrar detalles de una bebida específica
+// Usa useParams para obtener el ID de la bebida desde la URL
+// Carga datos de la API y permite agregar al carrito
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getDrinkById } from '../services/apiBackend'; // Updated import
@@ -5,15 +8,18 @@ import { useCart } from '../context/CartContext';
 import { toast } from 'react-toastify';
 
 function DrinkDetail() {
-  const { id } = useParams();
+  // Estado para la bebida y estado de carga
+  const { id } = useParams(); // Obtiene ID de la bebida desde la URL
   const [drink, setDrink] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { addToCart } = useCart();
+  const { addToCart } = useCart(); // Función para agregar al carrito
 
+  // Carga detalles de la bebida al montar o al cambiar el ID
   useEffect(() => {
     const fetchDrink = async () => {
       try {
         const data = await getDrinkById(id);
+        // Agrega precio aleatorio para simulación
         if (data) {
           data.price = (Math.random() * 15 + 5).toFixed(2);
           setDrink(data);
@@ -29,6 +35,7 @@ function DrinkDetail() {
     fetchDrink();
   }, [id]);
 
+  // Agrega la bebida al carrito
   const handleAddToCart = () => {
     if (drink) {
       addToCart({
@@ -40,7 +47,9 @@ function DrinkDetail() {
     }
   };
 
+  // Muestra estado de carga
   if (loading) return <div className="text-center py-10">Cargando...</div>;
+  // Muestra mensaje si no se encuentra la bebida
   if (!drink)
     return <div className="text-center py-10">Bebida no encontrada</div>;
 

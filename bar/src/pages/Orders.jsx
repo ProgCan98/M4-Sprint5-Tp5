@@ -9,6 +9,7 @@ import { toast } from 'react-toastify'; // Notificaciones
 import Swal from 'sweetalert2'; // Confirmaciones interactivas
 
 function Orders() {
+  // Estados para órdenes y estado de carga
   const [orders, setOrders] = useState([]); // Lista de órdenes
   const [loading, setLoading] = useState(true); // Estado de carga
 

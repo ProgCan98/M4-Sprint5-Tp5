@@ -1,4 +1,4 @@
-// src/context/CartContext.js
+// Contexto para gestionar el estado global del carrito
 import { createContext, useContext } from 'react';
 
 const CartContext = createContext();

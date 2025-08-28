@@ -1,19 +1,26 @@
-// src/pages/Home.jsx
+// Página inicial del proyecto Cocktail Bar
+// Muestra un formulario de búsqueda y un enlace al menú
+// Usa useNavigate para redirigir a /menu con parámetros de búsqueda
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import heroImage from '../assets/hero1.jpg';
 
 function Home() {
+  // Estado para el término de búsqueda
   const [searchTerm, setSearchTerm] = useState('');
+  // Hook useNavigate para navegación programática
   const navigate = useNavigate();
 
+  // Maneja el envío del formulario de búsqueda
   const handleSearch = (e) => {
     e.preventDefault();
     const term = searchTerm.trim();
     if (term) {
+      // Redirige a /menu con el término de búsqueda como query param
       console.log('Redirigiendo a /menu?search=', term);
       navigate(`/menu?search=${encodeURIComponent(term)}`);
     } else {
+      // Redirige a /menu sin parámetros si la búsqueda está vacía
       console.log('Búsqueda vacía, no se redirige');
       navigate('/menu'); // Si está vacío, va a todas las bebidas
     }
@@ -43,6 +50,7 @@ function Home() {
         >
           Elige tu bebida favorita
         </p>
+        {/* Formulario de búsqueda */}
         <form onSubmit={handleSearch} className="w-full max-w-md">
           <div className="flex">
             <input
@@ -60,6 +68,7 @@ function Home() {
             </button>
           </div>
         </form>
+        {/* Enlace directo al menú */}
         <Link
           to="/menu"
           className="px-6 py-3 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition"

@@ -1,19 +1,24 @@
-// src/pages/Checkout.jsx
+// Página para enviar pedidos al backend
+// Usa useNavigate para redirigir tras enviar el pedido
+// Valida el formulario y usa Toastify para notificaciones
 import { useCart } from '../context/CartContext';
 import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 import { createOrder } from '../services/apiBackend';
 
 function Checkout() {
+  // Estados para los campos del formulario
   const { cartItems, clearCart, getTotal, setOrderId } = useCart();
   const navigate = useNavigate();
 
+  // Maneja el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     const table = e.target.table.value;
     const waiter = e.target.waiter.value;
     const time = e.target.time.value;
 
+    // Prepara datos de la orden
     const orderData = {
       table: parseInt(table),
       waiter,
@@ -24,12 +29,13 @@ function Checkout() {
 
     try {
       const response = await createOrder(orderData);
-      const orderId = response.id;
-      await clearCart();
+      const orderId = response.id; // Guarda ID de la orden
+      await clearCart(); // Vacía el carrito
       setOrderId(null);
       toast.success(
         `Pedido #${orderId} enviado a mesa ${table} con ${waiter} en ${time} min`
       );
+      // Redirige a la página inicial
       setTimeout(() => navigate('/'), 0);
     } catch (error) {
       console.error('Error in handleSubmit:', error.message);
@@ -70,6 +76,7 @@ function Checkout() {
         onSubmit={handleSubmit}
         className="bg-gray-800 p-6 rounded-lg shadow-lg"
       >
+        {/* Campo para número de mesa */}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">
             Número de Mesa
@@ -82,6 +89,7 @@ function Checkout() {
             className="w-full p-2 bg-gray-900 text-white border border-gray-600 rounded"
           />
         </div>
+        {/* Selector para mozo */}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Mozo</label>
           <select
@@ -94,6 +102,7 @@ function Checkout() {
             <option value="Pedro">Pedro</option>
           </select>
         </div>
+        {/* Selector para tiempo de preparación */}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">
             Tiempo Aproximado
